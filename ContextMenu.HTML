@@ -1,0 +1,136 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Context Menu</title>
+
+    <script type="text/javascript" src="JS/jquery-1.11.2.min.js"></script> 
+    <script type="text/javascript" src="JS/handlebars-v3.0.1.js"></script> 
+    <script type="text/javascript" src="JS/contextMenuEx.js"></script> 
+    
+
+
+    <style type="text/css">
+        body {
+            font:15px arial,sans-serif;
+        }
+        h1 {
+            margin: 0 0 10px 0;
+            padding: 5px;
+            font-size: 24px;
+            background-color: #999;
+            color: #fff;
+        }
+        table {
+            margin: 10px;
+        }
+        th, td {
+            padding: 5px;
+        }
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+        th {
+            background: #ccc;
+        }
+        tr:nth-child(odd) {
+            background: #eee;
+        }
+        td a {
+            color: #000;
+            text-decoration: underline;
+        }
+        #menu{
+            display: inline-block;
+            width: 150px;
+            border: 1px solid #999;
+            top:300px;
+            position: absolute;
+            visibility: hidden;  
+        }
+        .menuItem{
+            background-color: #ccc;
+            border-bottom: 1px solid #999;
+        }
+
+        .menuItem.last{
+            border-bottom: none;
+        }
+        .deactive{
+            color:red;
+            background-color: #CCC;
+            font-style: italic;
+        }
+    </style>
+
+<script type="text/javascript">
+var cMenu = null;
+window.onload = function(){
+    cMenu = new createContextMenu();
+    cMenu.buildTable();
+
+    var table = document.getElementById('userTable');
+    var tableRows = document.getElementsByClassName('tableRow');
+    var tableCells = document.getElementById('menu');
+
+    for(var i=0; i<tableRows.length; i++){
+        if( document.addEventListener ){
+            tableRows[i].addEventListener("contextmenu", cMenu.displayMenu, true);
+        }
+        else{
+            tableRows[i].attachEvent("oncontextmenu", cMenu.displayMenu);
+        }
+    }
+    if( document.addEventListener ){
+        // table.addEventListener("contextmenu", cMenu.displayMenu, true);
+        document.addEventListener("click", cMenu.hideMenu, true);
+        tableCells.addEventListener("mouseover", cMenu.mouseOver, true);
+        tableCells.addEventListener("mouseout", cMenu.mouseOut, true);
+        tableCells.addEventListener("click", function(e){cMenu.chooseAction(e)}, true);
+    }
+    else{
+        // table.attachEvent("oncontextmenu", cMenu.displayMenu);
+        document.attachEvent("onclick", cMenu.hideMenu);
+        tableCells.attachEvent("onmouseover", cMenu.mouseOver);
+        tableCells.attachEvent("onmouseout", cMenu.mouseOut);
+        tableCells.attachEvent("click", cMenu.chooseAction);
+    }
+
+
+    }
+</script>
+
+<script id="some-template" type="text/x-handlebars-template">
+     <table id="userTable">
+        <thead> 
+            <th class='heading'>First Name</th> 
+            <th class='heading'>Last Name</th> 
+            <th class='heading'>Email</th> 
+            <th class='heading'>Phone</th>
+            <th class='heading'>State</th> 
+        </thead> 
+        <tbody> 
+            {{#users}} 
+                <tr class="{{addClass}} tableRow"> 
+                    <td class="tableCell">{{firstName}}</td>
+                    <td class="tableCell">{{lastName}}</td> 
+                    <td class="tableCell">{{email}}</td> 
+                    <td class="tableCell">{{phone}}</td> 
+                    <td class="tableCell">{{state}}</td> 
+                </tr> 
+            {{/users}} 
+        </tbody> 
+    </table> 
+    </script>
+</head>
+<body>
+    <h1>Handlebars JS Example</h1>
+    <div id="tab" ></div>
+    <div id="menu">
+        <div class="menuItem" id="edit">Edit</div>
+        <div class="menuItem" id="remove">Remove</div>
+        <div class="menuItem" id="sort">Sort</div>
+        <div class="menuItem last" id="deactivate">Deactivate</div>
+    </div>
+</body>
+</html>
